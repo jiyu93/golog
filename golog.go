@@ -1,96 +1,54 @@
 package golog
 
 import (
-	"fmt"
 	"io"
 	"os"
 )
 
-//--------------------
-// LOG LEVEL
-//--------------------
+// 全局Logger，默认向标准输出流输出日志
+var gLogger = NewLogger(os.Stdout, 0)
 
-// Log levels to control the logging output.
-const (
-	LevelTrace = iota
-	LevelDebug
-	LevelInfo
-	LevelWarning
-	LevelError
-	LevelCritical
-)
-
-// logLevel controls the global log level used by the logger.
-var level = LevelTrace
-
-// LogLevel returns the global log level and can be used in
-// own implementations of the logger interface.
-func Level() int {
-	return level
+// SetDefaultOutput 修改默认的输出目的地
+func SetDefaultOutput(w io.Writer) {
+	gLogger.SetOutput(w)
 }
 
-// SetLogLevel sets the global log level used by the simple
-// logger.
-func SetLevel(l int) {
-	level = l
+// SetDefaultFlags 修改默认输出格式
+func SetDefaultFlags(flags int) {
+	gLogger.SetFlags(flags)
 }
 
-// SetFlags sets the output flags for the logger.
-func SetFlags(flag int) {
-	GoLogger.SetFlags(flag)
-}
-
-// logger references the used application logger.
-var GoLogger = New(os.Stdout, "", Ldate|Ltime|Lshortfile, 1)
-
-func SetOutput(w io.Writer) {
-	GoLogger = New(w, "", Ldate|Ltime|Lshortfile, 1)
-}
-
-// SetLogger sets a new logger.
-func SetLogger(l *Logger) {
-	GoLogger = l
-}
-
-// Trace logs a message at trace level.
+// Trace 打印Trace级别的日志
 func Trace(v ...interface{}) {
-	if level <= LevelTrace {
-		GoLogger.Printf("[T] %s", fmt.Sprintln(v...))
-	}
+	gLogger.Trace(v...)
 }
 
-// Debug logs a message at debug level.
+// Debug 打印Debug级别的日志
 func Debug(v ...interface{}) {
-	if level <= LevelDebug {
-		GoLogger.Printf("[D] %s", fmt.Sprintln(v...))
-	}
+	gLogger.Debug(v...)
 }
 
-// Info logs a message at info level.
+// Info 打印Info级别的日志
 func Info(v ...interface{}) {
-	if level <= LevelInfo {
-		GoLogger.Printf("[I] %s", fmt.Sprintln(v...))
-	}
+	gLogger.Info(v...)
 }
 
-// Warning logs a message at warning level.
+// Warn 打印Warn级别的日志
 func Warn(v ...interface{}) {
-	if level <= LevelWarning {
-		GoLogger.Printf("[W] %s", fmt.Sprintln(v...))
-	}
+	gLogger.Warn(v...)
 }
 
-// Error logs a message at error level.
+// Error 打印Error级别的日志
 func Error(v ...interface{}) {
-	if level <= LevelError {
-		GoLogger.Printf("[E] %s", fmt.Sprintln(v...))
-	}
+	gLogger.Error(v...)
 }
 
-// Critical logs a message at critical level.
-func Critical(v ...interface{}) {
-	if level <= LevelCritical {
-		GoLogger.Printf("[C] %s", fmt.Sprintln(v...))
-		os.Exit(1)
-	}
+// Panic 打印Panic级别的日志，然后调用panic()函数
+func Panic(v ...interface{}) {
+	gLogger.Panic(v...)
+}
+
+// Fatal 打印Fatal级别的日志，然后直接退出程序
+func Fatal(v ...interface{}) {
+	gLogger.Fatal(v...)
 }
