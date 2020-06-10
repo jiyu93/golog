@@ -18,6 +18,11 @@ func SetDefaultFlags(flags int) {
 	gLogger.SetFlags(flags)
 }
 
+// SetDefaultLevel 修改默认输出级别
+func SetDefaultLevel(level int) {
+	gLogger.SetLevel(level)
+}
+
 // Trace 打印Trace级别的日志
 func Trace(v ...interface{}) {
 	gLogger.Trace(v...)
